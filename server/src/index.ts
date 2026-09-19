@@ -15,22 +15,37 @@ app.get("/health", (req, res) => {
 app.get("/measure", async (req, res) => {
     const url = req.query.url
     if (typeof url !== "string") {
-        res.status(400).json({
+       return res.status(400).json({
             error: "Please provide a valid string url"
         })
     }
-    const start = performance.now()
+    let parsedUrl: URL;
     try {
-        const result = await measureWebsite(url)
-        res.json(result)
+       parsedUrl = new URL(url)
         
     } catch(error) {
-        res.status(500).json({
-            error: "Failed to measure URL"
+        return res.status(400).json({
+            error: "Invalid URL"
         })
-        console.log(error)
+
     }
 
+    if (parsedUrl.protocol !== "http:" && parsedUrl.protocol !== "https:"){
+        return res.status(400).json({
+            error: "Only HTTP and HTTPS URLs are supported"
+        })
+    }
+
+    try {
+        const result = await measureWebsite(url);
+        res.json(result)
+        
+    } catch (error) {
+        console.error("Measurement failed", error);
+        return res.status(500).json({
+            error: "Failed to Measure URL"
+        })
+    }
 })
 
 app.listen(PORT, ()=>{

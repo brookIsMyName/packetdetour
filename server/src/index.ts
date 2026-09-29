@@ -1,9 +1,11 @@
 import express from "express";
+import cors from "cors";
 import {measureWebsite} from './services/measureWebsite'
 
 const { performance } = require('perf_hooks');
 
 const app = express();
+app.use(cors());
 const PORT = 3000;
 
 app.get("/health", (req, res) => {

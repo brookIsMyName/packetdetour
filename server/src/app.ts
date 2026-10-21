@@ -5,8 +5,11 @@ import { saveMeasurement } from "./database/saveMeasurement";
 import { pool } from "./database/db";
 
 export const app = express();
-
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.CLIENT_ORIGIN ?? "http://localhost:3001"
+  })
+);
 
 app.get("/health", (req, res) => {
   return res.json({
@@ -83,7 +86,11 @@ app.get("/history", async (req, res) => {
     `);
 
     return res.json(result.rows);
-  } catch (error) {
+  } catch (error) {app.use(
+  cors({
+    origin: process.env.CLIENT_ORIGIN ?? "http://localhost:3001"
+  })
+);
     console.error(error);
 
     return res.status(500).json({
